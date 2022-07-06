@@ -1,0 +1,24 @@
+# permissions for end users to edit movies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: movies-editor-role
+rules:
+- apiGroups:
+  - rating.tanisha.banik
+  resources:
+  - movies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - rating.tanisha.banik
+  resources:
+  - movies/status
+  verbs:
+  - get

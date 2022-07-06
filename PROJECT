@@ -1,0 +1,16 @@
+domain: tanisha.banik
+layout:
+- go.kubebuilder.io/v3
+projectName: imdb
+repo: github.com/26tanishabanik/imdb-controller
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: tanisha.banik
+  group: rating
+  kind: Movies
+  path: github.com/26tanishabanik/imdb-controller/api/v1
+  version: v1
+version: "3"
