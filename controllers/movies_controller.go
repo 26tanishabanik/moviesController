@@ -54,7 +54,7 @@ type MoviesReconciler struct {
 func (r *MoviesReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := log.FromContext(ctx)
 	log = log.WithValues("movies", req.NamespacedName)
-	var movie ratingv1.Movies
+	var movie ratingv1.Movies //= &ratingv1.Movies{}
 	if err := r.Get(ctx, req.NamespacedName, &movie); err != nil {
 		log.Error(err, "could not get the Movies object")
 		return ctrl.Result{}, err
@@ -66,10 +66,10 @@ func (r *MoviesReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 		pod := corev1.Pod{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      fmt.Sprintf("job-%s", req.Name),
-				Namespace: "default",
+				Namespace: "customcontroller",
 			},
 			Spec: corev1.PodSpec{
-				RestartPolicy: "Never",
+				RestartPolicy: "OnFailure",
 				Containers: []corev1.Container{
 					{
 						Name:  "imdb-fetcher",
@@ -92,9 +92,12 @@ func (r *MoviesReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 		}
 
 		// log.Info(fmt.Sprintf("Answer is %s", answer))
-		movie.Status.Rating = "rating"
+		movie.Status.Rating = answer
+		log.Info(fmt.Sprintf("Updated Pod status is  %s", movie.Status.Rating))
 		log.Info(fmt.Sprintf("Answer is %s", answer))
-		if err := r.Update(ctx, &movie, &client.UpdateOptions{}); err != nil {
+		// if err := r.Patch(ctx, movie, &client.PatchOptions); err != nil {
+		if err := r.Status().Update(ctx, &movie, &client.UpdateOptions{}); err != nil {
+
 			log.Error(err, "could not update pod")
 			return ctrl.Result{}, err
 		}

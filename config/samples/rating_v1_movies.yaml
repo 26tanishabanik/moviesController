@@ -2,6 +2,7 @@ apiVersion: rating.tanisha.banik/v1
 kind: Movies
 metadata:
   name: movies-sample
+  namespace: customcontroller
 spec:
   # TODO(user): Add fields here
   movieName: Captain-America-Winter-Soldier
